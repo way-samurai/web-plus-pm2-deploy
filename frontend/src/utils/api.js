@@ -138,7 +138,7 @@ class Api {
       .then(getResponse)
   }
   }
-  
-  const api = new Api('http://samurai.student.nomoredomains.work');
+
+  const api = new Api('https://api.samurai.student.nomoredomains.work');
 
   export default api;

@@ -24,7 +24,7 @@ function App() {
   const [selectedCard, setSelectedCard] = React.useState(null);
   const [cards, setCards] = React.useState([]);
 
-  
+
   const [currentUser, setCurrentUser] = React.useState({});
 
   const [isInfoToolTipOpen, setIsInfoToolTipOpen] = React.useState(false);
@@ -34,10 +34,10 @@ function App() {
   const [email, setEmail] = React.useState("");
 
   const history = useHistory();
+  const token = localStorage.getItem("jwt");
 
 
   React.useEffect(() => {
-    const token = localStorage.getItem("jwt");
     if (token) {
       api
         .checkToken(token)
@@ -58,10 +58,10 @@ function App() {
           console.log(err);
         });
     }
-  }, [history]);
+  }, [history, token]);
 
 
-  
+
   function handleEditProfileClick() {
     setIsEditProfilePopupOpen(true);
   }
@@ -166,15 +166,15 @@ function App() {
   }
 
   function onSignOut() {
-    
+
     localStorage.removeItem("jwt");
     setIsLoggedIn(false);
-    
+
     history.push("/signin");
   }
 
   return (
-    
+
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page__content">
         <Header email={email} onSignOut={onSignOut} />
