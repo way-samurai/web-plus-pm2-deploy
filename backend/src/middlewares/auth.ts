@@ -7,7 +7,11 @@ interface JwtPayload {
   _id: string
 }
 
-const auth = (req: Request, res: Response, next: NextFunction) => {
+export interface SessionRequest extends Request {
+  user?: string | JwtPayload;
+}
+
+const auth = (req: SessionRequest, res: Response, next: NextFunction) => {
   try {
     let token = req.cookies.jwt || req.headers.authorization;
     if (!token) {

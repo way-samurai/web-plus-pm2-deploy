@@ -11,6 +11,10 @@ import BadRequestError from '../errors/bad-request-error';
 import NotFoundError from '../errors/not-found-error';
 import ConflictError from '../errors/conflict-error';
 
+export interface SessionRequest extends Request {
+  user?: { _id: string };
+}
+
 const login = (req: Request, res: Response, next: NextFunction) => {
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
@@ -60,15 +64,28 @@ const getUser = (req: Request, res: Response, next: NextFunction) => {
   getUserData(req.params.id, res, next);
 };
 
-const getCurrentUser = (req: Request, res: Response, next: NextFunction) => {
-  getUserData(req.user._id, res, next);
+const getCurrentUser = (
+  req: SessionRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  getUserData(req.user!._id, res, next);
 };
 
-const updateUserData = (req: Request, res: Response, next: NextFunction) => {
-  const { user: { _id }, body } = req;
-  User.findByIdAndUpdate(_id, body, { new: true, runValidators: true })
-    .orFail(() => new NotFoundError('Пользователь по заданному id отсутствует в базе'))
-    .then((user) => res.send(user))
+const updateUserData = (
+  req: SessionRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  const {
+    user,
+    body,
+  } = req;
+  User.findByIdAndUpdate(user!._id, body, { new: true, runValidators: true })
+    .orFail(
+      () => new NotFoundError('Пользователь по заданному id отсутствует в базе'),
+    )
+    .then((userCurr) => res.send(userCurr))
     .catch(next);
 };
 
